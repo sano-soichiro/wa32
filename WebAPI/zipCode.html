@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <p id="output1"></p>
+    <form onsubmit="return false;" action="" method="get">
+        <input type="text" id="zipcode" name="zipcode" required>
+        <button type="submit" id="button">検索</button>
+    </form>
+    <script>
+/*         document.getElementById("button").addEventListener("click" , function(){
+            const zipCode = document.getElementById("zipcode").value;
+            $.ajax({
+                url:"https://zipcloud.ibsnet.co.jp/api/search",
+                type:"GET",
+                async:false,
+                data:{
+                    zipcode:zipCode
+                }
+            })
+            .done(function(data){
+                alert(data);
+                const array = JSON.parse(data);
+                document.getElementById("output1").innerHTML = array.results[0].address1 + array.results[0].address2;
+                console.log(array.results[0].address1);
+            })
+            .fail(function(data){
+                alert("faild");
+            })
+            .always(function(data){
+                alert("always");
+            })
+            alert("hello");
+        }) */
+
+        $("#button").on("click" , function(){
+            $.ajax({
+                url:"https://zipcloud.ibsnet.co.jp/api/search",
+                type:"GET",
+                async:false,
+                data:{
+                    zipcode:$("input[name='zipcode']").val(),
+                }
+            })
+            .done(function(data){
+                $("#output1").empty();
+                $("#output1").append(`${JSON.parse(data).results[0].address2}`);
+            })
+            .fail(function(data){
+                alert("failed");
+            })
+            .always(function(data){
+
+            })
+        })
+    </script>
+</body>
+</html>

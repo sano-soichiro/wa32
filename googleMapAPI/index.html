@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="map" style="width: 560px; height: 500px;"></div>
+    <button type="button" onclick="toOsaka()">HAL大阪</button>
+    <button type="button" onclick="toTokyo()">HAL東京</button>
+    <script>
+        var map;
+        var info;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 34.69893644, lng: 135.49634885},
+                zoom: 18
+            });
+        }
+
+        function toTokyo(){
+            if(info){
+                info.close();
+            }
+            map.panTo(new google.maps.LatLng(35.69157895551821, 139.69695974807647));
+            var iwopts = {
+                content: "a",
+                position: map.getCenter()
+            }
+            var info = new google.maps.InfoWindow(iwopts);
+            info.open(map);
+        }
+
+        function toOsaka(){
+            if(info){
+                info.close();
+            }
+            map.panTo(new google.maps.LatLng(34.69984336086003, 135.4930462998682));
+            var iwopts = {
+                content: "こんにちは",
+                position: map.getCenter()
+            }
+            var info = new google.maps.InfoWindow(iwopts);
+            info.open(map);
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap"></script>
+</body>
+</html>

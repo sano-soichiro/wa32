@@ -1,0 +1,2 @@
+
+myCallback({"type" : ["JSON", "XML", "YAML"]});

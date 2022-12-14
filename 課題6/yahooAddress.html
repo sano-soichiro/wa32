@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <input name="query" id="query" value="" >
+    <input type="button" value="実行" onclick="showAddress()" >
+
+    <div id="output"></div>
+
+    <script type="text/javascript">
+        //住所を表示する
+        function showAddress() {
+            let appid = 'dj00aiZpPWxETTFyOHBqWHB5MyZzPWNvbnN1bWVyc2VjcmV0Jng9N2M-';
+            let query = document.getElementById('query').value;
+            let url = "https://map.yahooapis.jp/search/zip/V1/zipCodeSearch?appid=" + appid;
+            url = url + "&query=" + encodeURI( query ) + "&output=json&callback=showResult";
+            callJSONP( url );
+        }
+
+        //JsonPを実行する関数
+        function callJSONP( url ) {
+            let target = document.createElement('script');
+            target.charset = 'utf-8';
+            target.src = url;
+            document.body.appendChild(target);
+        }
+
+        //JsonPの結果として実行される関数
+        function showResult( results ) {
+            $('#output').empty();
+            let log = document.createElement('p');
+            log.textContent = '検索結果';
+            $('#output').append(log);
+            let logValue = document.createElement('p');
+            let logList = document.createElement('ul');
+
+            if( results.ResultInfo.Status == 200 ){
+
+                if( results.ResultInfo.Count > 0 ){
+                    
+                    logValue.textContent = results.Feature[0].Property.Address;
+
+                    for(let i = 0; i < results.Feature[0].Property.Station.length; i++ ) {
+                        let logListData = document.createElement('li');
+                        logListData.textContent = results.Feature[0].Property.Station[i].Name;
+                        logList.appendChild(logListData);
+                    }
+
+                } else {
+                    logValue.textContent = '入力された郵便番号が存在しません';
+                }
+
+            } else {
+
+                logValue.textContent = '通信が正常に終了しませんでした';
+
+            }
+
+            $('#output').append(logValue);
+            $('#output').append(logList);
+        }
+    </script>
+</body>
+</html>

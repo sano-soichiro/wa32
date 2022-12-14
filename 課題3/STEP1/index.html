@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/destyle.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../../jquery-3.6.0.min.js"></script>
+    <title>郵便番号検索 | 非同期通信</title>
+</head>
+<body>
+    <div id="search">
+        <input type="text" name="zipcode" id="zipcode" placeholder="1000001">
+        <button type="button" id="button">検索</button>
+    </div>
+    <div id="place">
+
+    </div>
+    <script>
+        $("#button").on("click" , function(){
+            $.ajax({
+                url:"https://zipcloud.ibsnet.co.jp/api/search",
+                type:"GET",
+                async:false,
+                data:{
+                    zipcode:$("input[name='zipcode']").val(),
+                }
+            })
+            .done(function(data){
+                var results = JSON.parse(data);
+                $("#place").empty();
+                $("#place").append(`<ul>
+                                        <li>${results.results[0].address1}</li>
+                                        <li>${results.results[0].address2}</li>
+                                        <li>${results.results[0].address3}</li>
+                                    </ul>`);
+            })
+            .fail(function(data){
+                alert("bad");
+            })
+            .always(function(data){
+
+            })
+        })
+    </script>
+</body>
+</html>

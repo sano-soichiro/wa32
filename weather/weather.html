@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jquery-3.6.0.min.js"></script>
+    <title>地域天気予報 | 非同期通信</title>
+</head>
+<body>
+    <div id="search">
+        <input type="text" name="city" id="city" placeholder="1000001">
+        <button type="button" id="button">検索</button>
+    </div>
+    <div id="place">
+
+    </div>
+    <script>
+        $.ajax({
+            url:"https://weather.tsukumijima.net/",
+            dataType:'xml',
+        })
+        .done(function(data){
+            console.log(data);
+        })
+        .fail(function(data){
+            console.log(data);
+        })
+
+        $("#button").on("click" , function(){
+            $.ajax({
+                url:"https://weather.tsukumijima.net/api/forecast",
+                type:"GET",
+                dataType:"json",
+                async:false,
+                data:{
+                    city:$("input[name='city']").val(),
+                }
+            })
+            .done(function(data){
+                console.log(data);
+                var results = JSON.stringify(data);
+                $("#place").empty();
+                $("#place").append(`<ul>
+                                        <li>${data.publicTime}</li>
+                                        <li>${data.description.bodyText}</li>
+                                        <li>${data.title}</li>
+                                    </ul>`);
+            })
+            .fail(function(data){
+                console.log(data);
+                alert("bad");
+            })
+            .always(function(data){
+
+            })
+        })
+    </script>
+</body>
+</html>

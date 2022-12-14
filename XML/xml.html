@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jquery-3.6.0.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <form action="" method="GET" onsubmit="return false" >
+        <select id="List">
+
+        </select>
+        <input type="submit" name="button1" value="送信" id="btnid">
+    </form>
+
+    <div id="output1"></div>
+    <div id="output2"></div>
+
+    <script>
+        $('#List').append($('<option>').html('地域を選択してください。').val(''));
+
+        let xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState == 4) {
+                if(xmlhttp.status == 200) {
+                    let elm = xmlhttp.responseXML.documentElement;
+                    let node = elm.getElementsByTagName("city");
+                    for(let i = 0; i < node.length; i++){
+                        $("#List").append(`<option value="${node[i].getAttribute('id')}">${node[i].getAttribute("title")}</option>`);
+                        console.log(node[i].getAttribute("title"));
+                    }
+                }
+            }
+        }
+
+        $("#btnid").on('click' , function(){
+            let searchId = $("#List option:selected").val();
+
+            $.ajax({
+                url:"https://weather.tsukumijima.net/api/forecast",
+                type:"GET",
+                dataType:"json",
+                async:false,
+                data:{
+                    city:searchId,
+                }
+            })
+            .done(function(data){
+                console.log(data);
+                var results = JSON.stringify(data);
+                $("#output1").empty();
+                $("#output1").append(`<ul>
+                                        <li>${data.publicTime}</li>
+                                        <li>${data.description.text}</li>
+                                        <li>${data.title}</li>
+                                    </ul>`);
+            })
+            .fail(function(data){
+                console.log(data);
+                alert("bad");
+            })
+            .always(function(data){
+
+            })
+        })
+            
+
+        xmlhttp.open("GET" , "primary_area.xml");
+        xmlhttp.send();
+    </script>
+</body>
+</html>

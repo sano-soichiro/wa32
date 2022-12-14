@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/destyle.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../../jquery-3.6.0.min.js"></script>
+    <title>郵便番号検索 | 非同期通信（一つの番号に二つの地域）</title>
+</head>
+<body>
+    <div id="search">
+        <input type="text" name="zipcode" id="zipcode" placeholder="1000001">
+        <button type="button" id="button">検索</button>
+    </div>
+    <div id="place">
+
+    </div>
+    <div id="alert"></div>
+    <script>
+        $("#button").on("click" , function(){
+            $("#place").empty();
+            $("#alert").empty();
+            $.ajax({
+                url:"https://zipcloud.ibsnet.co.jp/api/search",
+                type:"GET",
+                async:false,
+                data:{
+                    zipcode:$("input[name='zipcode']").val(),
+                }
+            })
+            .done(function(data){
+                var results = JSON.parse(data);
+                console.log(results);
+                if (results.message !== null){
+                    $("#alert").append(`<p>${results.message}</p>`);
+                }
+                else if(results.results === null){
+                    $("#alert").append(`<p>該当する所在地は存在しません</p>`);
+                }
+                else{
+                    const length = results.results.length;
+                    for(let i = 0; i < length; i++){
+                        $("#place").append(`<ul class='${i}'>
+                                                <li>${results.results[i].address1}</li>
+                                                <li>${results.results[i].address2}</li>
+                                                <li>${results.results[i].address3}</li>
+                                            </ul>`);
+                    }
+                }
+            })
+            .fail(function(data){
+                alert("bad");
+            })
+            .always(function(data){
+
+            })
+        })
+    </script>
+</body>
+</html>
